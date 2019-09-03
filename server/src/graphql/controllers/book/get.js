@@ -3,10 +3,12 @@ const iconv = require('iconv-lite');
 const cheerio = require('cheerio');
 const path = require('path');
 
-const URL = 'https://www.biqiuge8.com';
+const { sourceConfig } = require('../../../config/custom');
 
-module.exports = async id => {
+const source0 = async id => {
+  const URL = sourceConfig['source0'];
   const url = encodeURI(`${URL}/book/${id}/`);
+
   const result = await request({
     url,
     encoding: null
@@ -40,9 +42,25 @@ module.exports = async id => {
     .trim();
   const latestA = $('body > div.book > div.info > div.small > span:nth-child(6) > a');
   const latest = {
-    id: path.basename(latestA.attr('href')).split('.')[0],
+    id: path.basename(latestA.attr('href'), '.html'),
     name: latestA.text()
   };
+  const chapters = $('body > div.listmain > dl')
+    .children('dd')
+    .toArray()
+    .map(o => {
+      const aTag = $(o)
+        .children()
+        .first();
+      const chapterId = path.basename(aTag.attr('href'), '.html');
+      const chapterName = aTag.text();
+      return {
+        id: chapterId,
+        bookId: id,
+        name: chapterName
+      };
+    })
+    .slice(6, 6 + 10);
 
   return {
     id,
@@ -54,6 +72,15 @@ module.exports = async id => {
     author,
     updatedAt,
     latest,
-    chapters: []
+    chapters
   };
+};
+
+const sourceList = {
+  source0
+};
+
+module.exports = async (id, { sourceId }) => {
+  const result = await sourceList[`source${sourceId}`](id);
+  return result;
 };

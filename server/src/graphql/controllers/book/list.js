@@ -3,38 +3,16 @@ const iconv = require('iconv-lite');
 const cheerio = require('cheerio');
 const path = require('path');
 
-const URL = 'https://www.biqiuge.com';
+const { sourceConfig } = require('../../../config/custom');
 
-module.exports = async ctx => {
-  const data = await ctx.db.collection('topBooks').findOne({
-    from: 'biqiuge',
-    createdAt: {
-      $gt: Date.now() - 24 * 3600 * 1000
-    }
-  });
-
-  if (data) {
-    return data.topBooks;
-  }
-
-  const topBooks = await crawler();
-
-  await ctx.db.collection('topBooks').insertOne({
-    from: 'biqiuge',
-    topBooks: topBooks,
-    createdAt: Date.now()
-  });
-
-  return topBooks;
-};
-
-const crawler = async () => {
+const source0 = async () => {
+  const URL = sourceConfig['source0'];
   const url = URL;
+
   const result = await request({
     url,
     encoding: null
   });
-
   const html = iconv.decode(result, 'gbk');
   const $ = cheerio.load(html);
   const wrap = $('body').children('.wrap');
@@ -88,4 +66,13 @@ const crawler = async () => {
     .get();
 
   return blockList;
+};
+
+const sourceList = {
+  source0
+};
+
+module.exports = async ({ sourceId }) => {
+  const result = await sourceList[`source${sourceId}`]();
+  return result;
 };

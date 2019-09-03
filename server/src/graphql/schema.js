@@ -22,6 +22,7 @@ module.exports = gql`
 
   type Chapter {
     id: ID!
+    bookId: ID!
     name: String!
     content: String
   }
@@ -46,6 +47,7 @@ module.exports = gql`
   type Query {
     user: User!
     book(id: ID!): Book
+    chapter(id: ID!, bookId: ID!): Chapter
     books(keyword: String): [Book]!
     topBooks: [TopBook!]!
   }
