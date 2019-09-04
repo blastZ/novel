@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 
-export default () => {
+export default ({ title }) => {
   const classes = useStyles();
 
   return (
@@ -14,7 +14,7 @@ export default () => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Bookshelf
+            {title}
           </Typography>
           <IconButton edge="start" color="inherit" aria-label="menu">
             <SearchIcon />
