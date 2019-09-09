@@ -1,16 +1,17 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
-import BottomNavigation from '../components/common/BottomNavigation';
-import AppBar from '../components/common/AppBar';
 import Card from '../components/index/Card';
 import Explore from '../components/index/Explore';
+import useApp from '../reducer/useApp';
 
 export default () => {
-  const [current, setCurrent] = useState(1);
+  const {
+    state: { current }
+  } = useApp();
   const classes = useStyles();
   const { loading, error, data } = useQuery(GET_USER);
 
@@ -35,30 +36,7 @@ export default () => {
     }
   }, []);
 
-  const getTitle = useCallback(value => {
-    switch (value) {
-      case 0:
-        return '收藏';
-      case 1:
-        return '发现';
-      case 2:
-        return '我的';
-    }
-  });
-
-  return (
-    <Grid container direction="column">
-      <Grid item container>
-        <AppBar title={getTitle(current)} />
-      </Grid>
-      <Grid item container className={classes.mainContainer}>
-        {getMainLayout(current)}
-      </Grid>
-      <Grid item container>
-        <BottomNavigation value={current} onChange={setCurrent} />
-      </Grid>
-    </Grid>
-  );
+  return <Grid container>{getMainLayout(current)}</Grid>;
 };
 
 const GET_USER = gql`
@@ -75,15 +53,4 @@ const GET_USER = gql`
   }
 `;
 
-const useStyles = makeStyles({
-  '@global': {
-    '*': {
-      margin: 0,
-      padding: 0,
-      boxSizing: 'border-box'
-    }
-  },
-  mainContainer: {
-    padding: '32px 16px 88px 16px'
-  }
-});
+const useStyles = makeStyles({});

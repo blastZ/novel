@@ -33,17 +33,6 @@ module.exports = gql`
     list: [Book!]!
   }
 
-  input BookKeyword {
-    name: String
-    author: String
-  }
-
-  input SearchValues {
-    id: ID
-    name: String
-    author: String
-  }
-
   type Query {
     user: User!
     book(id: ID!): Book

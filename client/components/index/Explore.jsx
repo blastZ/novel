@@ -12,19 +12,21 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Router from 'next/router';
 
 export default () => {
   const classes = useStyles();
   const { loading, error, data } = useQuery(GET_TOP_BOOKS);
 
   if (loading) return <div>loading...</div>;
+  if (error) return <div>error...</div>;
 
   const { topBooks } = data;
 
   return (
     <Grid container direction="column" spacing={3}>
       {topBooks.map(o => (
-        <Grid item>
+        <Grid key={o.top.id} item>
           <TopBooksCard key={o.category} data={o} classes={classes} />
         </Grid>
       ))}
@@ -34,13 +36,21 @@ export default () => {
 
 const TopBooksCard = ({ data, classes }) => {
   console.log(data);
+
+  const handleClick = React.useCallback(
+    id => () => {
+      Router.push(`/book/${id}`);
+    },
+    []
+  );
+
   return (
     <Card className={classes.card}>
       <CardHeader className={classes.cardHeader} title={data.category} />
       <CardContent className={classes.cardContent}>
         <Grid container direction="column">
           <Grid item container spacing={2}>
-            <Grid item xs={5}>
+            <Grid onClick={handleClick(data.top.id)} item xs={5}>
               <img style={{ width: '100%' }} src={data.top.thumb} />
             </Grid>
             <Grid item xs={7} container direction="column" spacing={1}>
@@ -57,7 +67,7 @@ const TopBooksCard = ({ data, classes }) => {
           <Grid item container>
             <List component="nav" className={classes.list}>
               {data.list.map(oo => (
-                <React.Fragment>
+                <React.Fragment key={oo.id}>
                   <ListItem button component="a" key={oo.id} href={oo.id}>
                     <ListItemText primary={`${oo.name} / ${oo.author}`} />
                   </ListItem>

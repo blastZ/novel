@@ -3,9 +3,12 @@ import App from 'next/app';
 import Head from 'next/head';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { ThemeProvider } from '@material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import withApolloClient from '../lib/with-apollo-client';
 import theme from '../lib/theme';
+import Layout from '../components/common/Layout';
+import { AppProvider } from '../reducer/useApp';
 
 class MyApp extends App {
   componentDidMount() {
@@ -21,11 +24,25 @@ class MyApp extends App {
     return (
       <ApolloProvider client={apolloClient}>
         <ThemeProvider theme={theme}>
-          <Component {...pageProps} />
+          <AppProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AppProvider>
         </ThemeProvider>
       </ApolloProvider>
     );
   }
 }
 
-export default withApolloClient(MyApp);
+const styles = () => ({
+  '@global': {
+    '*': {
+      margin: 0,
+      padding: 0,
+      boxSizing: 'border-box'
+    }
+  }
+});
+
+export default withApolloClient(withStyles(styles)(MyApp));
