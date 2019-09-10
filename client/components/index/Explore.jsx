@@ -26,7 +26,7 @@ export default () => {
   return (
     <Grid container direction="column" spacing={3}>
       {topBooks.map(o => (
-        <Grid key={o.top.id} item>
+        <Grid key={o.top.id} item container>
           <TopBooksCard key={o.category} data={o} classes={classes} />
         </Grid>
       ))}
@@ -51,7 +51,7 @@ const TopBooksCard = ({ data, classes }) => {
         <Grid container direction="column">
           <Grid item container spacing={2}>
             <Grid onClick={handleClick(data.top.id)} item xs={5}>
-              <img style={{ width: '100%' }} src={data.top.thumb} />
+              <img className={classes.thumb} src={data.top.thumb} />
             </Grid>
             <Grid item xs={7} container direction="column" spacing={1}>
               <Grid item>
@@ -116,5 +116,9 @@ const useStyles = makeStyles(() => ({
   },
   topDesc: {
     color: '#B3B3B3'
+  },
+  thumb: {
+    width: '100%',
+    maxWidth: 240
   }
 }));

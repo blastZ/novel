@@ -33,7 +33,7 @@ export default props => {
   return (
     <Grid container direction="column">
       <Grid item container>
-        <AppBar title={getTitle(current)} />
+        <AppBar isIndex={isIndex} title={getTitle(current)} />
       </Grid>
       <Grid item container className={classes.mainContainer}>
         {props.children}

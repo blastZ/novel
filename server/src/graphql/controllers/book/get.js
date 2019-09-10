@@ -60,7 +60,7 @@ const source0 = async id => {
         name: chapterName
       };
     })
-    .slice(6, 6 + 10);
+    .slice(6);
 
   return {
     id,
