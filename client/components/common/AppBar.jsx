@@ -8,19 +8,23 @@ import SearchIcon from '@material-ui/icons/Search';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import { useRouter } from 'next/router';
 
-export default ({ title, isIndex }) => {
-  const classes = useStyles();
+export default ({ title, isIndex, isChapter }) => {
+  const classes = useStyles({
+    isChapter
+  });
   const router = useRouter();
 
   const handleBack = useCallback(() => {
     router.back();
   }, []);
 
+  const showBackIcon = !isIndex;
+
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar className={classes.appBar} position="fixed">
         <Toolbar>
-          {!isIndex && (
+          {showBackIcon && (
             <IconButton onClick={handleBack} edge="start" color="inherit" aria-label="back">
               <BackIcon />
             </IconButton>
@@ -44,5 +48,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
     textAlign: 'center'
-  }
+  },
+  appBar: {}
 }));

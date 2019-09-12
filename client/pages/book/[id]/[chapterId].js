@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import { makeStyles } from '@material-ui/styles';
+import Loading from '../../../components/common/Loading';
 
 export default () => {
   const router = useRouter();
@@ -15,7 +16,8 @@ export default () => {
     }
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
+  if (error) return <div>error...</div>;
 
   const { name, content } = data.chapter;
   const lines = content.split('<br>').filter(o => o);

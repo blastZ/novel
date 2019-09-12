@@ -50,11 +50,12 @@ export default () => {
   const passedProps = {
     classes,
     book,
-    page
+    page,
+    router
   };
 
   return (
-    <Grid container direction="column" spacing={2}>
+    <Grid className={classes.container} container direction="column" spacing={2}>
       <Grid item container spacing={2}>
         <Grid item xs={5}>
           <img className={classes.thumb} src={book.thumb} />
@@ -111,7 +112,16 @@ export default () => {
   );
 };
 
-const ChapterList = ({ classes, book, page }) => {
+const ChapterList = ({ classes, book, page, router }) => {
+  const handleClick = useCallback(
+    (bookId, chapterId) => () => {
+      router.push(`/book/${bookId}/${chapterId}`).then(() => {
+        window.scrollTo(0, 0);
+      });
+    },
+    []
+  );
+
   return (
     <Grid item container>
       <Grid item>
@@ -123,7 +133,7 @@ const ChapterList = ({ classes, book, page }) => {
         <List component="nav" aria-label="secondary mailbox folders">
           {book.chapters.slice(page * SIZE, page * SIZE + SIZE).map(o => (
             <div key={o.id}>
-              <ListItem className={classes.listItem} button>
+              <ListItem onClick={handleClick(o.bookId, o.id)} className={classes.listItem} button>
                 <ListItemText primary={o.name} />
               </ListItem>
               <Divider />
