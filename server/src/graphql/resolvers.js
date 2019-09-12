@@ -22,8 +22,22 @@ module.exports = {
     },
     book: async (parent, args, ctx) => {
       const { id } = args;
+
+      const data = await ctx.db.collection('book').findOne({
+        bookId: id
+      });
+
+      if (data) {
+        return data.book;
+      }
+
       const book = await require('./controllers/book/get')(id, {
         sourceId: 0
+      });
+
+      await ctx.db.collection('book').insertOne({
+        bookId: id,
+        book
       });
 
       return book;
@@ -44,9 +58,23 @@ module.exports = {
       }
     },
     topBooks: async (parent, args, ctx) => {
+      const data = await ctx.db.collection('topBooks').findOne({
+        sourceId: 0
+      });
+
+      if (data) {
+        return data.topBooks;
+      }
+
       const books = await require('./controllers/book/list')({
         sourceId: 0
       });
+
+      await ctx.db.collection('topBooks').insertOne({
+        sourceId: 0,
+        topBooks: books
+      });
+
       return books;
     }
   },
