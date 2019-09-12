@@ -13,6 +13,8 @@ import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import Loading from '../../../components/common/Loading';
+
 const SIZE = 20;
 
 export default () => {
@@ -39,7 +41,7 @@ export default () => {
     setPage(pre => pre - 1);
   }, []);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>error...</div>;
 
   const { book } = data;

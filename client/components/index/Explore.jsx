@@ -14,11 +14,13 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Router from 'next/router';
 
+import Loading from '../common/Loading';
+
 export default () => {
   const classes = useStyles();
   const { loading, error, data } = useQuery(GET_TOP_BOOKS);
 
-  if (loading) return <div>loading...</div>;
+  if (loading) return <Loading />;
   if (error) return <div>error...</div>;
 
   const { topBooks } = data;
