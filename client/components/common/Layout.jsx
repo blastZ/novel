@@ -6,12 +6,13 @@ import { useRouter } from 'next/router';
 
 import BottomNavigation from './BottomNavigation';
 import useApp from '../../reducer/useApp';
+import BottomBar from './BottomBar';
 
 export default props => {
   const router = useRouter();
   const isIndex = router.route === '/';
 
-  const classes = useStyles();
+  const classes = useStyles({ isIndex });
   const {
     state: { current },
     handleCurrent
@@ -28,31 +29,33 @@ export default props => {
       case 2:
         return '我的';
     }
-  });
+  }, []);
 
   const showBottomNavigation = isIndex;
   const showBottomInfo = !isIndex;
 
   return (
-    <Grid container direction="column">
-      <Grid item container>
-        <AppBar isIndex={isIndex} title={getTitle(current)} />
-      </Grid>
-      <Grid item container className={classes.mainContainer}>
-        {props.children}
-      </Grid>
-      {showBottomNavigation && (
+    <>
+      <Grid container direction="column">
         <Grid item container>
-          <BottomNavigation value={current} onChange={handleCurrent} />
+          <AppBar isIndex={isIndex} title={getTitle(current)} />
         </Grid>
-      )}
-      {showBottomInfo && <Grid item></Grid>}
-    </Grid>
+        <Grid item container className={classes.mainContainer}>
+          {props.children}
+        </Grid>
+        {showBottomNavigation && (
+          <Grid item container>
+            <BottomNavigation value={current} onChange={handleCurrent} />
+          </Grid>
+        )}
+      </Grid>
+      {showBottomInfo && <BottomBar handleCurrent={handleCurrent} router={router} />}
+    </>
   );
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   mainContainer: {
-    padding: '32px 16px 88px 16px'
+    padding: ({ isIndex }) => `32px 16px ${isIndex ? 88 : 32}px 16px`
   }
-});
+}));
