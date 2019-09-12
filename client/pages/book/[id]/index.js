@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
@@ -9,6 +9,9 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const SIZE = 20;
 
@@ -24,11 +27,29 @@ export default () => {
     }
   });
 
+  const handlePageChange = useCallback(e => {
+    setPage(e.target.value);
+  }, []);
+
+  const handleNextPage = useCallback(() => {
+    setPage(pre => pre + 1);
+  }, []);
+
+  const handlePrevPage = useCallback(() => {
+    setPage(pre => pre - 1);
+  }, []);
+
   if (loading) return <div>loading...</div>;
   if (error) return <div>error...</div>;
 
   const { book } = data;
   console.log(book);
+
+  const passedProps = {
+    classes,
+    book,
+    page
+  };
 
   return (
     <Grid container direction="column" spacing={2}>
@@ -82,7 +103,8 @@ export default () => {
       <Grid item>
         <Divider />
       </Grid>
-      <ChapterList classes={classes} book={book} page={page} />
+      <ChapterList {...passedProps} />
+      <PageSelect {...passedProps} handleChange={handlePageChange} handleNext={handleNextPage} handlePrev={handlePrevPage} />
     </Grid>
   );
 };
@@ -95,19 +117,53 @@ const ChapterList = ({ classes, book, page }) => {
           章节列表
         </Typography>
       </Grid>
-      <Grid item container>
-        <Grid className={classes.listContainer} item>
-          <List component="nav" aria-label="secondary mailbox folders">
-            {book.chapters.slice(page * SIZE, page * SIZE + SIZE).map(o => (
-              <div key={o.id}>
-                <ListItem className={classes.listItem} button>
-                  <ListItemText primary={o.name} />
-                </ListItem>
-                <Divider />
-              </div>
-            ))}
-          </List>
-        </Grid>
+      <Grid className={classes.listContainer} item container>
+        <List component="nav" aria-label="secondary mailbox folders">
+          {book.chapters.slice(page * SIZE, page * SIZE + SIZE).map(o => (
+            <div key={o.id}>
+              <ListItem className={classes.listItem} button>
+                <ListItemText primary={o.name} />
+              </ListItem>
+              <Divider />
+            </div>
+          ))}
+        </List>
+      </Grid>
+    </Grid>
+  );
+};
+
+const PageSelect = ({ classes, book, page, handleChange, handleNext, handlePrev }) => {
+  const pageIndexList = useMemo(() => {
+    const length = Math.ceil(book.chapters.length / SIZE);
+    const list = new Array(length).fill(0);
+
+    return list;
+  }, [book]);
+
+  return (
+    <Grid className={classes.pageSelectContainer} item container justify="space-between">
+      <Grid item>
+        <Button onClick={handlePrev} color="primary" variant="outlined" className={classes.button} disabled={page === 0}>
+          上一页
+        </Button>
+      </Grid>
+      <Grid className={classes.selectContainer} item container justify="center">
+        <Select autoWidth value={page} onChange={handleChange}>
+          {pageIndexList.map((o, index) => (
+            <MenuItem key={index} value={index}>{`第 ${index * SIZE + 1}-${index * SIZE + SIZE} 条`}</MenuItem>
+          ))}
+        </Select>
+      </Grid>
+      <Grid item>
+        <Button
+          onClick={handleNext}
+          color="primary"
+          variant="outlined"
+          className={classes.button}
+          disabled={page === pageIndexList.length - 1}>
+          下一页
+        </Button>
       </Grid>
     </Grid>
   );
@@ -149,9 +205,21 @@ const useStyles = makeStyles(() => ({
     maxWidth: 240
   },
   listContainer: {
-    width: '100%'
+    width: '100%',
+    '& > nav': {
+      width: '100%'
+    }
   },
   listItem: {
     paddingLeft: 0
+  },
+  pageSelectContainer: {
+    padding: '0 32px'
+  },
+  selectContainer: {
+    flex: 1,
+    '& > div': {
+      width: '60%'
+    }
   }
 }));

@@ -30,6 +30,9 @@ export default props => {
     }
   });
 
+  const showBottomNavigation = isIndex;
+  const showBottomInfo = !isIndex;
+
   return (
     <Grid container direction="column">
       <Grid item container>
@@ -38,11 +41,12 @@ export default props => {
       <Grid item container className={classes.mainContainer}>
         {props.children}
       </Grid>
-      {isIndex && (
+      {showBottomNavigation && (
         <Grid item container>
           <BottomNavigation value={current} onChange={handleCurrent} />
         </Grid>
       )}
+      {showBottomInfo && <Grid item></Grid>}
     </Grid>
   );
 };
