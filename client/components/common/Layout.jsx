@@ -56,6 +56,6 @@ export default props => {
 
 const useStyles = makeStyles(theme => ({
   mainContainer: {
-    padding: ({ isIndex }) => `32px 16px ${isIndex ? 88 : 32}px 16px`
+    padding: ({ isIndex }) => `${56 + 32}px 16px ${isIndex ? 88 : 32}px 16px`
   }
 }));

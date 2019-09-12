@@ -18,7 +18,7 @@ export default ({ title, isIndex }) => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           {!isIndex && (
             <IconButton onClick={handleBack} edge="start" color="inherit" aria-label="back">
