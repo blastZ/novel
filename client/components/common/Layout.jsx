@@ -11,6 +11,7 @@ import BottomBar from './BottomBar';
 export default props => {
   const router = useRouter();
   const isIndex = router.route === '/';
+  const isSearch = router.route === '/search';
 
   const classes = useStyles({ isIndex });
   const {
@@ -38,9 +39,9 @@ export default props => {
     <>
       <Grid container direction="column">
         <Grid item container>
-          <AppBar isIndex={isIndex} title={getTitle(current)} />
+          <AppBar isIndex={isIndex} isSearch={isSearch} title={getTitle(current)} />
         </Grid>
-        <Grid item container className={classes.mainContainer}>
+        <Grid item container className={classes.mainContainer} justify="center">
           {props.children}
         </Grid>
         {showBottomNavigation && (
