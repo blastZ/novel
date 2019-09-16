@@ -5,11 +5,10 @@ const KoaBody = require('koa-body');
 const typeDefs = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 const { db, router, auth } = require('./middleware');
-const dbConfig = require('./config/database');
 
 const app = new Koa();
 
-app.use(db(dbConfig));
+app.use(db());
 app.use(async (ctx, next) => {
   ctx.set('Access-Control-Allow-Origin', 'http://127.0.0.1:3000');
   ctx.set('Access-Control-Allow-Credentials', true);
