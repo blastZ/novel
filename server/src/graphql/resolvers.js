@@ -53,7 +53,7 @@ module.exports = {
     books: async (parent, args, ctx) => {
       const { keyword } = args;
       if (keyword) {
-        const books = await require('./controllers/book/biquge/search')(keyword);
+        const books = await require('./controllers/book/search')(keyword);
         return books;
       }
     },

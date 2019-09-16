@@ -17,7 +17,7 @@ module.exports = gql`
     author: String
     updatedAt: String
     latest: Chapter
-    chapters: [Chapter]
+    chapters: [Chapter]!
   }
 
   type Chapter {

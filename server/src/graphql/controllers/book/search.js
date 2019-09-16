@@ -13,72 +13,63 @@ module.exports = async keyword => {
   const html = iconv.decode(result, 'utf8');
   const $ = cheerio.load(html);
 
-  const resultList = $('body').find('.result-list');
+  const resultList = $('body > div.result-list')
+    .children()
+    .toArray();
 
-  const filter = item => {
-    const itemPic = item.children('.result-game-item-pic');
-    const thumb = itemPic.find('img').attr('src');
-    const id = path.basename(itemPic.find('a').attr('href'));
-
-    const itemDetail = item.children('.result-game-item-detail');
-    const name = itemDetail
-      .children('h3')
-      .children('a')
-      .children('span')
-      .text();
-    const desc = itemDetail
-      .children('p')
-      .text()
-      .trim();
-
-    const itemInfo = itemDetail.children('.result-game-item-info');
-    const author = itemInfo
-      .children('p')
+  const books = resultList.map(o => {
+    const div = $(o);
+    const id = path.basename(div.find('a.result-game-item-pic-link').attr('href'));
+    const name = div
+      .find('a.result-game-item-title-link')
+      .children()
       .eq(0)
-      .children('span')
-      .eq(1)
+      .text();
+    const category = div.find('div.result-game-item-info > p:nth-child(2) > span:nth-child(2)').text();
+    const thumb = div.find('img.result-game-item-pic-link-img').attr('src');
+    const desc = div
+      .find('p.result-game-item-desc')
       .text()
       .trim();
-    const category = itemInfo
-      .children('p')
-      .eq(1)
-      .children('span')
-      .eq(1)
-      .text();
-    const updatedAt = itemInfo
-      .children('p')
-      .eq(2)
-      .children('span')
-      .eq(1)
-      .text();
-    const latest = itemInfo
-      .children('p')
-      .eq(3)
-      .children('a');
-    const latestName = latest.text().trim();
-    const latestId = path
-      .basename(latest.attr('href'))
-      .trim()
-      .split('.')[0];
+    const author = div
+      .find('div.result-game-item-detail > div > p:nth-child(1) > span:nth-child(2)')
+      .text()
+      .trim();
+    const updatedAt = div
+      .find('div.result-game-item-detail > div > p:nth-child(3) > span:nth-child(2)')
+      .text()
+      .trim();
+    const latest = {
+      id: path.basename(
+        div
+          .find('div.result-game-item-detail > div > p:nth-child(4) > a')
+          .attr('href')
+          .trim(),
+        '.html'
+      ),
+      bookId: id,
+      name: div
+        .find('div.result-game-item-detail > div > p:nth-child(4) > a')
+        .text()
+        .trim()
+    };
 
-    return {
+    const result = {
       id,
       name,
-      desc,
-      thumb,
-      author,
       category,
+      thumb,
+      desc,
+      author,
       updatedAt,
-      latest: {
-        id: latestId,
-        name: latestName
-      }
+      latest,
+      chapters: []
     };
-  };
 
-  const books = resultList.children('.result-item').map((index, ele) => {
-    return filter($(ele));
+    return result;
   });
 
   return books;
 };
+
+// TODO add page navigation
