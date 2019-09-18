@@ -12,6 +12,7 @@ export default props => {
   const router = useRouter();
   const isIndex = router.route === '/';
   const isSearch = router.route === '/search';
+  const isLogin = router.route === '/login';
 
   const classes = useStyles({ isIndex });
   const {
@@ -32,15 +33,18 @@ export default props => {
     }
   }, []);
 
+  const showAppBar = !isLogin;
   const showBottomNavigation = isIndex;
-  const showBottomInfo = !isIndex;
+  const showBottomInfo = !isIndex && !isLogin;
 
   return (
     <>
-      <Grid container direction="column">
-        <Grid item container>
-          <AppBar isIndex={isIndex} isSearch={isSearch} title={getTitle(current)} />
-        </Grid>
+      <Grid className={classes.container} container direction="column">
+        {showAppBar && (
+          <Grid item container>
+            <AppBar isIndex={isIndex} isSearch={isSearch} title={getTitle(current)} />
+          </Grid>
+        )}
         <Grid item container className={classes.mainContainer} justify="center">
           {props.children}
         </Grid>
@@ -56,7 +60,12 @@ export default props => {
 };
 
 const useStyles = makeStyles(theme => ({
+  container: {
+    height: '100%'
+  },
   mainContainer: {
+    height: '100%',
+    background: 'linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%)',
     padding: ({ isIndex }) => `${56 + 32}px 16px ${isIndex ? 88 : 32}px 16px`
   }
 }));

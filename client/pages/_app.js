@@ -37,9 +37,15 @@ class MyApp extends App {
 
 const styles = () => ({
   '@global': {
-    '*': {
+    'html, body': {
+      height: '100%',
       margin: 0,
-      padding: 0,
+      padding: 0
+    },
+    '#__next': {
+      minHeight: '100%'
+    },
+    '*': {
       boxSizing: 'border-box',
       scrollBehavior: 'smooth'
     }
