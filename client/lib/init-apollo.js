@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, HttpLink } from 'apollo-boost';
+import { onError } from 'apollo-link-error';
 import fetch from 'isomorphic-unfetch';
 
 let apolloClient = null;
@@ -9,11 +10,17 @@ function create(initialState) {
   return new ApolloClient({
     connectToDevTools: isBrowser,
     ssrMode: !isBrowser,
-    link: new HttpLink({
-      uri: 'http://127.0.0.1:1338/graphql',
-      credentials: 'include',
-      fetch: !isBrowser && fetch
-    }),
+    link: onError(({ networkError }) => {
+      if (networkError.statusCode === 401) {
+        typeof window !== 'undefined' && (window.location = '/login');
+      }
+    }).concat(
+      new HttpLink({
+        uri: 'http://127.0.0.1:1338/graphql',
+        credentials: 'include',
+        fetch: !isBrowser && fetch
+      })
+    ),
     cache: new InMemoryCache().restore(initialState || {})
   });
 }
