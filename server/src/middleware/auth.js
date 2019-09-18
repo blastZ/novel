@@ -7,10 +7,12 @@ module.exports = () => {
     const token = ctx.cookies.get('token');
 
     if (!token) {
-      return (ctx.body = {
+      ctx.status = 401;
+
+      ctx.body = {
         success: false,
         message: 'Need Login'
-      });
+      };
     } else {
       const decoded = jwt.verify(token, jwtSecret);
       ctx.userInfo = {

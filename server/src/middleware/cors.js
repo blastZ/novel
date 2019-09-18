@@ -2,20 +2,44 @@ const config = require('../config/security');
 
 module.exports = () => {
   const {
-    cors: { allowOrigins }
+    cors: { allowOrigins, allowMethods, allowHeaders, allowCredentials }
   } = config;
 
   return async (ctx, next) => {
-    const origin = ctx.get('Origin');
+    let origin = ctx.get('Origin');
 
-    await next();
+    if (!allowOrigins.includes(origin)) {
+      origin = null;
+    }
 
-    if (allowOrigins.includes(origin)) {
+    if (!origin) return await next();
+
+    if (ctx.method !== 'OPTIONS') {
+      await next();
+
       ctx.set('Access-Control-Allow-Origin', origin);
-      if (config.cors.allowCredentials) {
+      ctx.set('Access-Control-Allow-Headers', allowHeaders.join(','));
+
+      if (allowCredentials) {
         ctx.set('Access-Control-Allow-Credentials', true);
       }
-      ctx.set('Access-Control-Allow-Headers', 'content-type');
+    } else {
+      if (!ctx.get('Access-Control-Request-Method')) {
+        return await next();
+      }
+
+      ctx.set('Access-Control-Allow-Origin', origin);
+      ctx.set('Access-Control-Allow-Headers', allowHeaders.join(','));
+
+      if (allowCredentials) {
+        ctx.set('Access-Control-Allow-Credentials', true);
+      }
+
+      if (allowMethods) {
+        ctx.set('Access-Control-Allow-Methods', allowMethods.join(','));
+      }
+
+      ctx.status = 204;
     }
   };
 };
