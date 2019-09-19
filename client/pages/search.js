@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 
 import Loading from '../components/common/Loading';
+import Layout from '../components/common/Layout';
 
 export default () => {
   const [value, setValue] = useState('');
@@ -47,29 +48,31 @@ export default () => {
   console.log(books);
 
   return (
-    <Grid className={classes.container} container direction="column" spacing={2} alignItems="center">
-      <Grid className={classes.searchBar} alignItems="center" item container spacing={3}>
-        <Grid className={classes.inputRoot} item>
-          <Input
-            value={value}
-            onChange={handleChange}
-            placeholder="请输入书名或作者搜索"
-            className={classes.input}
-            inputProps={{
-              'aria-label': 'search-value'
-            }}
-          />
+    <Layout>
+      <Grid className={classes.container} container direction="column" spacing={2} alignItems="center">
+        <Grid className={classes.searchBar} alignItems="center" item container spacing={3}>
+          <Grid className={classes.inputRoot} item>
+            <Input
+              value={value}
+              onChange={handleChange}
+              placeholder="请输入书名或作者搜索"
+              className={classes.input}
+              inputProps={{
+                'aria-label': 'search-value'
+              }}
+            />
+          </Grid>
+          <Grid item>
+            <Button onClick={handleSearch(value)} variant="contained" color="primary">
+              搜索
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item>
-          <Button onClick={handleSearch(value)} variant="contained" color="primary">
-            搜索
-          </Button>
-        </Grid>
+        {books.map(book => (
+          <Book key={book.id} classes={classes} book={book} />
+        ))}
       </Grid>
-      {books.map(book => (
-        <Book key={book.id} classes={classes} book={book} />
-      ))}
-    </Grid>
+    </Layout>
   );
 };
 

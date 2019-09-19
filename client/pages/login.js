@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
 import TextField from '@material-ui/core/TextField';
@@ -46,48 +47,72 @@ export default () => {
   );
 
   return (
-    <Card className={classes.card}>
-      <CardContent className={classes.cardContent}>
-        <TextField
-          id="outlined-name"
-          label="用户名"
-          className={classes.textField}
-          value={name}
-          onChange={handleName}
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          type="password"
-          id="outlined-password"
-          label="密码"
-          className={classes.textField}
-          value={password}
-          onChange={handlePassword}
-          margin="normal"
-          variant="outlined"
-        />
-        <Button onClick={handleLogin(name, password)} variant="contained" color="primary" className={classes.button}>
-          登陆
-        </Button>
-      </CardContent>
-    </Card>
+    <Grid className={classes.container} container direction="column" alignItems="center">
+      <Grid className={classes.content} item container direction="column" alignItems="center">
+        <Grid item>
+          <TextField
+            autoComplete="off"
+            id="outlined-name"
+            label="用户名"
+            className={classes.textField}
+            value={name}
+            onChange={handleName}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            type="password"
+            id="outlined-password"
+            label="密码"
+            className={classes.textField}
+            value={password}
+            onChange={handlePassword}
+            margin="normal"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <Button onClick={handleLogin(name, password)} variant="contained" color="secondary" className={classes.button}>
+            登陆
+          </Button>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 
 const useStyles = makeStyles({
-  card: {
-    width: '80%',
-    height: 'calc(100vh - 32px - 56px - 32px - 56px)'
+  container: {
+    background: `linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%)`,
+    height: '100vh'
   },
-  cardContent: {
-    paddingTop: 80,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+  content: {
+    marginTop: '35%'
+  },
+  textField: {
+    background: 'rgba(0,0,0,0.3)',
+    '& > *': {
+      color: '#fff !important'
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      border: '1px solid rgba(0,0,0,0.4) !important',
+      borderRadius: 0
+    }
   },
   button: {
-    width: 160,
-    marginTop: 32
+    width: 203,
+    height: 56,
+    marginTop: 32,
+    background: 'rgba(0, 0, 0, 0.3)',
+    color: '#fff',
+    fontSize: 16
   }
 });

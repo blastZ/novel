@@ -65,7 +65,6 @@ const useStyles = makeStyles(theme => ({
   },
   mainContainer: {
     height: '100%',
-    background: 'linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%)',
     padding: ({ isIndex }) => `${56 + 32}px 16px ${isIndex ? 88 : 32}px 16px`
   }
 }));

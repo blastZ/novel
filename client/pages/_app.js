@@ -1,13 +1,12 @@
 import React from 'react';
 import App from 'next/app';
-import Head from 'next/head';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { ThemeProvider } from '@material-ui/styles';
 import { withStyles } from '@material-ui/core/styles';
 
 import withApolloClient from '../lib/with-apollo-client';
 import theme from '../lib/theme';
-import Layout from '../components/common/Layout';
+
 import { AppProvider } from '../reducer/useApp';
 
 class MyApp extends App {
@@ -25,9 +24,7 @@ class MyApp extends App {
       <ApolloProvider client={apolloClient}>
         <ThemeProvider theme={theme}>
           <AppProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <Component {...pageProps} />
           </AppProvider>
         </ThemeProvider>
       </ApolloProvider>
@@ -48,6 +45,22 @@ const styles = () => ({
     '*': {
       boxSizing: 'border-box',
       scrollBehavior: 'smooth'
+    },
+    input: {
+      '&:-internal-autofill-selected, &:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus': {
+        '-webkit-text-fill-color': 'white',
+        border: 'none',
+        '-webkit-box-shadow': '0 0 0px 1000px rgba(0, 0, 0, 0.8) inset',
+        background: 'none !important',
+        color: 'white !important'
+      }
+    },
+    textarea: {
+      '&:-webkit-autofill, &:-webkit-autofill:hover, &:-webkit-autofill:focus': {
+        '-webkit-text-fill-color': 'white',
+        border: 'none',
+        '-webkit-box-shadow': '0 0 0px 1000px rgba(0, 0, 0) inset'
+      }
     }
   }
 });

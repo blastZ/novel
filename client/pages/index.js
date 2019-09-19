@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '../components/index/Card';
 import Explore from '../components/index/Explore';
 import useApp from '../reducer/useApp';
+import Layout from '../components/common/Layout';
 
 export default () => {
   const {
@@ -36,7 +37,11 @@ export default () => {
     }
   }, []);
 
-  return <Grid container>{getMainLayout(current)}</Grid>;
+  return (
+    <Layout>
+      <Grid container>{getMainLayout(current)}</Grid>
+    </Layout>
+  );
 };
 
 const GET_USER = gql`

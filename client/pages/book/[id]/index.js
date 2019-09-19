@@ -14,6 +14,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Loading from '../../../components/common/Loading';
+import Layout from '../../../components/common/Layout';
 
 const SIZE = 20;
 
@@ -55,60 +56,62 @@ export default () => {
   };
 
   return (
-    <Grid className={classes.container} container direction="column" spacing={2}>
-      <Grid item container spacing={2}>
-        <Grid item xs={5}>
-          <img className={classes.thumb} src={book.thumb} />
-        </Grid>
-        <Grid item xs={7} container direction="column" spacing={1}>
-          <Typography className={classes.title} variant="h6">
-            {book.name}
-          </Typography>
-          <Grid className={classes.subTitle} item container wrap="nowrap">
-            <Grid item xs={6}>
-              <Typography variant="body2">{`作者：${book.author}`}</Typography>
+    <Layout>
+      <Grid className={classes.container} container direction="column" spacing={2}>
+        <Grid item container spacing={2}>
+          <Grid item xs={5}>
+            <img className={classes.thumb} src={book.thumb} />
+          </Grid>
+          <Grid item xs={7} container direction="column" spacing={1}>
+            <Typography className={classes.title} variant="h6">
+              {book.name}
+            </Typography>
+            <Grid className={classes.subTitle} item container wrap="nowrap">
+              <Grid item xs={6}>
+                <Typography variant="body2">{`作者：${book.author}`}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body2">{`分类：${book.category}`}</Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2">{`分类：${book.category}`}</Typography>
+            <Grid className={classes.subTitle} item container wrap="nowrap">
+              <Grid item xs={6}>
+                <Typography variant="body2">{`状态：${book.status}`}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="body2">{`字数：0`}</Typography>
+              </Grid>
+            </Grid>
+            <Grid className={classes.subTitle} item>
+              <Typography variant="body2">{`更新：${book.updatedAt}`}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography variant="body2">{`最新：${book.latest.name}`}</Typography>
             </Grid>
           </Grid>
-          <Grid className={classes.subTitle} item container wrap="nowrap">
-            <Grid item xs={6}>
-              <Typography variant="body2">{`状态：${book.status}`}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2">{`字数：0`}</Typography>
-            </Grid>
+        </Grid>
+        <Grid item>
+          <Divider />
+        </Grid>
+        <Grid item container>
+          <Grid item>
+            <Typography className={classes.title} variant="body1">
+              内容简介
+            </Typography>
           </Grid>
           <Grid className={classes.subTitle} item>
-            <Typography variant="body2">{`更新：${book.updatedAt}`}</Typography>
-          </Grid>
-          <Grid item>
-            <Typography variant="body2">{`最新：${book.latest.name}`}</Typography>
+            <Typography className={classes.title} variant="body2">
+              {book.desc}
+            </Typography>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item>
-        <Divider />
-      </Grid>
-      <Grid item container>
         <Grid item>
-          <Typography className={classes.title} variant="body1">
-            内容简介
-          </Typography>
+          <Divider />
         </Grid>
-        <Grid className={classes.subTitle} item>
-          <Typography className={classes.title} variant="body2">
-            {book.desc}
-          </Typography>
-        </Grid>
+        <ChapterList {...passedProps} />
+        <PageSelect {...passedProps} handleChange={handlePageChange} handleNext={handleNextPage} handlePrev={handlePrevPage} />
       </Grid>
-      <Grid item>
-        <Divider />
-      </Grid>
-      <ChapterList {...passedProps} />
-      <PageSelect {...passedProps} handleChange={handlePageChange} handleNext={handleNextPage} handlePrev={handlePrevPage} />
-    </Grid>
+    </Layout>
   );
 };
 
