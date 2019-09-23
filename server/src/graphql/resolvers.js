@@ -1,5 +1,7 @@
 const ObjectId = require('mongodb').ObjectId;
 
+const getBook = require('../graphql/controllers/book/get');
+
 module.exports = {
   Query: {
     user: async (parent, args, ctx) => {
@@ -23,30 +25,20 @@ module.exports = {
     book: async (parent, args, ctx) => {
       const { id } = args;
 
-      const data = await ctx.db.collection('book').findOne({
-        bookId: id
-      });
-
-      if (data) {
-        return data.book;
-      }
-
-      const book = await require('./controllers/book/get')(id, {
-        sourceId: 0
-      });
-
-      await ctx.db.collection('book').insertOne({
-        bookId: id,
-        book
-      });
+      const book = await getBook(id, { sourceId: 0 }, ctx.db);
 
       return book;
     },
     chapter: async (parent, args, ctx) => {
       const { id, bookId } = args;
-      const chapter = await require('./controllers/chapter/get')(id, bookId, {
-        sourceId: 0
-      });
+      const chapter = await require('./controllers/chapter/get')(
+        id,
+        bookId,
+        {
+          sourceId: 0
+        },
+        ctx.db
+      );
 
       return chapter;
     },
@@ -79,13 +71,26 @@ module.exports = {
     }
   },
   Chapter: {
-    content: async parent => {
+    content: async (parent, args, ctx) => {
       const { id, bookId } = parent;
-      const content = (await require('./controllers/chapter/get')(id, bookId, {
-        sourceId: 0
-      })).content;
+
+      const content = (await require('./controllers/chapter/get')(
+        id,
+        bookId,
+        {
+          sourceId: 0
+        },
+        ctx.db
+      )).content;
 
       return content;
+    },
+    book: async (parent, args, ctx) => {
+      const { bookId } = parent;
+
+      const book = await getBook(bookId, { sourceId: 0 }, ctx.db);
+
+      return book;
     }
   }
 };

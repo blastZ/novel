@@ -25,6 +25,7 @@ module.exports = gql`
     bookId: ID!
     name: String!
     content: String
+    book: Book!
   }
 
   type TopBook {

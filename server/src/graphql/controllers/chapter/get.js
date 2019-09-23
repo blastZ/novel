@@ -1,12 +1,17 @@
 const request = require('request-promise');
 const iconv = require('iconv-lite');
 const cheerio = require('cheerio');
-const path = require('path');
 
 const { sourceConfig } = require('../../../config/custom');
 
-const source0 = async (id, bookId) => {
-  console.log('GET CHAPTER');
+const source0 = async (id, bookId, db) => {
+  const chapter = await db.collection('chapter').findOne({
+    bookId,
+    chapterId: id
+  });
+
+  if (chapter) return chapter.chapter;
+
   const URL = sourceConfig['source0'];
   const url = encodeURI(`${URL}/book/${bookId}/${id}.html`);
 
@@ -26,19 +31,27 @@ const source0 = async (id, bookId) => {
     .replace(/\<script\>chaptererror\(\)\;\<\/script\>/g, '')
     .replace(/请记住本书首发域名：biqiuge.com。笔趣阁手机版阅读网址：wap.biqiuge.com/g, '');
 
-  return {
+  const data = {
     id,
     bookId,
     name,
     content
   };
+
+  await db.collection('chapter').insertOne({
+    bookId,
+    chapterId: id,
+    chapter: data
+  });
+
+  return data;
 };
 
 sourceList = {
   source0
 };
 
-module.exports = async (id, bookId, { sourceId }) => {
-  const result = await sourceList[`source${sourceId}`](id, bookId);
+module.exports = async (id, bookId, { sourceId }, db) => {
+  const result = await sourceList[`source${sourceId}`](id, bookId, db);
   return result;
 };

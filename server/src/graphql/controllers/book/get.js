@@ -5,7 +5,15 @@ const path = require('path');
 
 const { sourceConfig } = require('../../../config/custom');
 
-const source0 = async id => {
+const source0 = async (id, db) => {
+  const book = await db.collection('book').findOne({
+    bookId: id
+  });
+
+  if (book) {
+    return book.book;
+  }
+
   const URL = sourceConfig['source0'];
   const url = encodeURI(`${URL}/book/${id}/`);
 
@@ -62,7 +70,7 @@ const source0 = async id => {
     })
     .slice(6);
 
-  return {
+  const data = {
     id,
     name,
     category,
@@ -74,13 +82,20 @@ const source0 = async id => {
     latest,
     chapters
   };
+
+  await ctx.db.collection('book').insertOne({
+    bookId: id,
+    book: data
+  });
+
+  return data;
 };
 
 const sourceList = {
   source0
 };
 
-module.exports = async (id, { sourceId }) => {
-  const result = await sourceList[`source${sourceId}`](id);
+module.exports = async (id, { sourceId }, db) => {
+  const result = await sourceList[`source${sourceId}`](id, db);
   return result;
 };
