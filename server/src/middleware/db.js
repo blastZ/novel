@@ -2,8 +2,8 @@ const MongoClient = require('mongodb').MongoClient;
 
 const config = require('../config/database');
 
-const { user, password, host, port = 27017, dbName } = config;
-const url = `mongodb://${user}:${password}@${host}:${port}`;
+const { connectionURL, user, password, host, port = 27017, dbName } = config;
+const url = connectionURL ? connectionURL : `mongodb://${user}:${password}@${host}:${port}`;
 const mongoClient = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
 let client = null;
 
