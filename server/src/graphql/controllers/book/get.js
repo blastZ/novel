@@ -83,7 +83,7 @@ const source0 = async (id, db) => {
     chapters
   };
 
-  await ctx.db.collection('book').insertOne({
+  await db.collection('book').insertOne({
     bookId: id,
     book: data
   });
