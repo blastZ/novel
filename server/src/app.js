@@ -6,11 +6,13 @@ const KoaBody = require('koa-body');
 
 const typeDefs = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
-const { db, router, auth, cors } = require('./middleware');
+const { router, auth, cors } = require('./middleware');
+const Mongo = require('./lib/db');
+const dbConfig = require('./config/database');
 
 const app = new Koa();
+const mongo = new Mongo(dbConfig);
 
-app.use(db());
 app.use(cors());
 app.use(KoaBody());
 app.use(router(app));
@@ -22,7 +24,7 @@ const server = new ApolloServer({
   context: ({ ctx }) => {
     return {
       userInfo: ctx.userInfo,
-      db: ctx.db
+      db: mongo.db
     };
   }
 });
